@@ -49,7 +49,7 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
             
             # Send the request to Groq's high-speed server
             completion = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                model="llama3-8b-8192",
                 messages=[
                     {"role": "system", "content": "You are an elite short-form content producer making million-view scripts for TikTok and Reels. Write the actual spoken words directly."},
                     {"role": "user", "content": prompt}
