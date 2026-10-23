@@ -1,16 +1,19 @@
 import streamlit as st
 from groq import Groq
+from streamlit_gsheets import GSheetsConnection
+import pandas as pd
 import re
 
-# Pull the hidden secure key from Streamlit Cloud Secrets
+# 1. Pull the hidden secure key from Streamlit Cloud Secrets
 try:
     GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 except Exception:
     st.error("🔒 Secret API Key missing. Please set up GROQ_API_KEY in your Streamlit dashboard.")
     st.stop()
 
-# Initialize the Groq AI Engine
+# 2. Establish Connections (Groq AI Engine & Google Sheets Pipeline)
 client = Groq(api_key=GROQ_API_KEY)
+conn = st.connection("gsheets", type=GSheetsConnection)
 
 st.set_page_config(page_title="ViralCraft AI", page_icon="🚀", layout="centered")
 
@@ -29,7 +32,7 @@ intensity = st.sidebar.slider("Hook Aggression/Curiosity Level (1-5)", 1, 5, 3)
 
 st.write("---")
 
-# NEW: Lead Capture Section
+# Lead Capture Visual Interface
 st.markdown("### 🔑 Unlock Your AI Script Generator")
 st.write("Enter your business email below to connect to the elite AI trend-matching engine.")
 
@@ -44,16 +47,29 @@ st.write("---")
 
 # Main Action Trigger
 if st.button("✨ Generate Custom AI Script", type="primary"):
-    # Check if the user filled out the email field correctly
     if not user_email:
         st.warning("⚠️ Please enter your email address to unlock the generator.")
     elif not is_valid_email(user_email):
         st.error("❌ The email address format looks invalid. Please enter a real email.")
     else:
-        # If email is good, run the AI generation
         with st.spinner("AI is brainstorming your viral script..."):
             try:
-                # Build custom system instructions
+                # --- GOOGLE SHEETS PIPELINE DATA LOGGER ---
+                # Fetch existing rows from the Google Sheet
+                try:
+                    existing_data = conn.read(worksheet="Sheet1", ttl="0d")
+                    df = pd.DataFrame(existing_data)
+                except Exception:
+                    df = pd.DataFrame(columns=["Email", "Niche"])
+                
+                # Format the new captured user lead
+                new_lead = pd.DataFrame([{"Email": user_email, "Niche": niche}])
+                
+                # Combine the data tables and write it back to your sheet cloud rows
+                updated_df = pd.concat([df, new_lead], ignore_index=True)
+                conn.update(worksheet="Sheet1", data=updated_df)
+                
+                # --- AI GENERATION BLOCK ---
                 prompt = f"""
                 Write a complete, highly engaging short-form video script for social media.
                 Niche target: {niche}
@@ -81,10 +97,7 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
                 )
                 
                 ai_script = completion.choices.message.content
-                st.success("🔥 Unique AI Script Generated Successfully!")
-                
-                # INTERNAL METRIC LOGGING: This prints the captured lead straight to your backend logs
-                print(f"[NEW USER LEAD CAPTURED]: {user_email} interested in {niche}")
+                st.success("🔥 Unique AI Script Generated Successfully! (Lead Logged)")
                 
                 st.markdown(ai_script)
                 
