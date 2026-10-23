@@ -58,8 +58,8 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
                 max_tokens=600
             )
             
-            # Extract the raw response text
-            ai_script = completion.choices.message.content
+            # FIXED: Added [0] to extract the first response layout accurately from the choice list
+            ai_script = completion.choices[0].message.content
             st.success("🔥 Unique AI Script Generated Successfully!")
             
             # Display it beautifully on screen
