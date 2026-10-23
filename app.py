@@ -47,7 +47,7 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
             (Write a highly converting action line driving comments or follows here)
             """
             
-            # Send the request to Groq's high-speed server
+            # Send the request to Groq's updated high-speed server engine
             completion = client.chat.completions.create(
                 model="openai/gpt-oss-20b",
                 messages=[
