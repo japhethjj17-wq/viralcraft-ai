@@ -18,7 +18,7 @@ st.title("🚀 BizViral AI")
 st.subheader("Generate High-Converting Local Business Scripts with Live AI")
 st.write("Turn casual scrollers into paying customers for local businesses and agencies.")
 
-# Sidebar Configuration panel layout - UPGRADED WITH SPECIFIC BUSINESS NICHES
+# Sidebar Configuration panel layout
 st.sidebar.header("🎯 Target Industry & Business")
 niche = st.sidebar.selectbox(
     "Select your business niche:",
@@ -71,7 +71,7 @@ if st.button("✨ Generate Business‑Getting AI Script", type="primary"):
                 (Write 1 psychological sentence tailored to this industry that makes local viewers stop scrolling)
                 
                 ### 📝 Lead-Gen Video Script Body  
-                (Write the complete word-for-word spoken narrative script text split into precise timing blocks like [0:00-0:05]. Make it sound natural, professional, and persuasive. Write the exact lines the business owner should say)
+                (Write the complete word-for-word narrative script text split into precise timing blocks like [0:00-0:05]. Make it sound natural, professional, and persuasive. Write the exact lines the business owner should say)
                 
                 ### 🚨 Conversion Call to Action (CTA)  
                 (Write a highly specific, high-conversion action line forcing viewers to comment a keyword or click a link in bio for a free consult/voucher/guide)
@@ -87,7 +87,8 @@ if st.button("✨ Generate Business‑Getting AI Script", type="primary"):
                     max_tokens=600
                 )
                 
-                ai_script = completion.choices.message.content
+                # FIXED LAYER: Explicitly selecting the first [0] choice index parameter array
+                ai_script = completion.choices[0].message.content
                 st.success("🔥 Local Business Script Generated Successfully!")
                 st.markdown(ai_script)
                 
