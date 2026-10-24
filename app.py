@@ -12,17 +12,24 @@ except Exception:
 # Initialize our high-speed Groq AI client engine
 client = Groq(api_key=GROQ_API_KEY)
 
-st.set_page_config(page_title="ViralCraft AI", page_icon="🚀", layout="centered")
+st.set_page_config(page_title="BizViral AI", page_icon="🚀", layout="centered")
 
-st.title("🚀 ViralCraft AI")
-st.subheader("Generate Custom Short-Form Scripts with Live AI")
-st.write("The ultimate tool for TikTok, Reels, and YouTube Shorts creators.")
+st.title("🚀 BizViral AI")
+st.subheader("Generate High-Converting Local Business Scripts with Live AI")
+st.write("Turn casual scrollers into paying customers for local businesses and agencies.")
 
-# Sidebar Configuration panel layout
-st.sidebar.header("🎯 Target Audience & Niche")
+# Sidebar Configuration panel layout - UPGRADED WITH SPECIFIC BUSINESS NICHES
+st.sidebar.header("🎯 Target Industry & Business")
 niche = st.sidebar.selectbox(
-    "Select your niche:",
-    ["Personal Finance", "Fitness & Health", "Tech & AI", "Business & Startups", "Lifestyle & Travel"]
+    "Select your business niche:",
+    [
+        "Real Estate (Agents & Brokers)", 
+        "Gyms & Fitness Centers", 
+        "Dental & Medical Clinics", 
+        "Restaurants & Cafes",
+        "Personal Finance & Coaching", 
+        "Tech & AI Startups"
+    ]
 )
 
 intensity = st.sidebar.slider("Hook Aggression/Curiosity Level (1-5)", 1, 5, 3)
@@ -30,8 +37,8 @@ intensity = st.sidebar.slider("Hook Aggression/Curiosity Level (1-5)", 1, 5, 3)
 st.write("---")
 
 # Front-end user lead acquisition entry interface
-st.markdown("### 🔑 Unlock Your AI Script Generator")
-st.write("Enter your business email below to connect to the elite AI trend-matching engine.")
+st.markdown("### 🔑 Unlock Your Business AI Script Generator")
+st.write("Enter your business email below to connect to our local-lead generation AI engine.")
 
 user_email = st.text_input("📧 Your Email Address", placeholder="name@company.com")
 
@@ -42,55 +49,55 @@ def is_valid_email(email):
 st.write("---")
 
 # Core operational trigger button logic
-if st.button("✨ Generate Custom AI Script", type="primary"):
+if st.button("✨ Generate Business‑Getting AI Script", type="primary"):
     if not user_email:
         st.warning("⚠️ Please enter your email address to unlock the generator.")
     elif not is_valid_email(user_email):
         st.error("❌ The email address format looks invalid. Please enter a real email.")
     else:
-        with st.spinner("AI is brainstorming your viral script..."):
+        with st.spinner("AI is crafting your industry-specific sales script..."):
             try:
                 st.info(f"📥 Lead captured securely. Processing your request...")
                 print(f"[DATA_LEAD_CAPTURED]: {user_email} | Niche: {niche}")
                 
+                # Custom industry-tailored prompt structure
                 prompt = f"""
-                Write a complete, highly engaging short-form video script for social media.
-                Niche target: {niche}
-                Hook Aggression/Curiosity Level: {intensity}/5 (Make it a strong pattern interrupter).
+                Write a complete, highly engaging short-form video sales script (TikTok/Reels/Shorts) designed to get localized client leads.
+                Business Industry/Niche: {niche}
+                Hook Aggression Level: {intensity}/5 (Make it a powerful local pattern interrupter).
                 
-                Format your response explicitly like this:
-                ### 🪝 Viral Hook
-                (Write a single viral sentence that hooks the user immediately here)
+                Format your response explicitly using these markdown headers:
+                ### 🪝 Local Business Hook  
+                (Write 1 psychological sentence tailored to this industry that makes local viewers stop scrolling)
                 
-                ### 📝 Video Script Body
-                (Write the complete word-for-word narrative spoken text split into clear timing markers like [0:00-0:05]. Do not give general advice; write the exact script lines)
+                ### 📝 Lead-Gen Video Script Body  
+                (Write the complete word-for-word spoken narrative script text split into precise timing blocks like [0:00-0:05]. Make it sound natural, professional, and persuasive. Write the exact lines the business owner should say)
                 
-                ### 🚨 Strong Call to Action (CTA)
-                (Write a highly converting action line driving comments or follows here)
+                ### 🚨 Conversion Call to Action (CTA)  
+                (Write a highly specific, high-conversion action line forcing viewers to comment a keyword or click a link in bio for a free consult/voucher/guide)
                 """
                 
                 completion = client.chat.completions.create(
                     model="openai/gpt-oss-20b",
                     messages=[
-                        {"role": "system", "content": "You are an elite short-form content producer making million-view scripts for TikTok and Reels. Write the actual spoken words directly."},
+                        {"role": "system", "content": "You are a master local direct-response marketer and elite scriptwriter who specializes in generating localized customer leads for physical businesses via short-form video ads."},
                         {"role": "user", "content": prompt}
                     ],
                     temperature=0.7,
                     max_tokens=600
                 )
                 
-                # FIXED: Accessing the first element [0] of the choices list correctly
-                ai_script = completion.choices[0].message.content
-                st.success("🔥 Unique AI Script Generated Successfully!")
+                ai_script = completion.choices.message.content
+                st.success("🔥 Local Business Script Generated Successfully!")
                 st.markdown(ai_script)
                 
                 st.download_button(
-                    label="💾 Download AI Script (.txt)",
+                    label="💾 Download Business Script (.txt)",
                     data=ai_script,
-                    file_name="viral_ai_script.txt",
+                    file_name="local_business_script.txt",
                     mime="text/plain"
                 )
             except Exception as e:
                 st.error(f"An unexpected server error occurred: {e}")
 else:
-    st.info("💡 Pick your configurations, type your email, and click 'Generate'.")
+    st.info("💡 Pick your targeted configurations, type your email, and click 'Generate'.")
