@@ -2,14 +2,14 @@ import streamlit as st
 from groq import Groq
 import re
 
-# Pull the hidden secure key from Streamlit Cloud Secrets
+# Safely extract the hidden token key from the Streamlit Cloud dashboard backend
 try:
     GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 except Exception:
-    st.error("🔒 Secret API Key missing. Please set up GROQ_API_KEY in your Streamlit dashboard.")
+    st.error("🔒 Secret API Key missing. Please set up GROQ_API_KEY in your Streamlit dashboard settings.")
     st.stop()
 
-# Initialize the Groq AI Engine
+# Initialize our high-speed Groq AI client engine
 client = Groq(api_key=GROQ_API_KEY)
 
 st.set_page_config(page_title="ViralCraft AI", page_icon="🚀", layout="centered")
@@ -18,7 +18,7 @@ st.title("🚀 ViralCraft AI")
 st.subheader("Generate Custom Short-Form Scripts with Live AI")
 st.write("The ultimate tool for TikTok, Reels, and YouTube Shorts creators.")
 
-# Sidebar Configuration
+# Sidebar Configuration panel layout
 st.sidebar.header("🎯 Target Audience & Niche")
 niche = st.sidebar.selectbox(
     "Select your niche:",
@@ -29,20 +29,19 @@ intensity = st.sidebar.slider("Hook Aggression/Curiosity Level (1-5)", 1, 5, 3)
 
 st.write("---")
 
-# Lead Capture Visual Interface
+# Front-end user lead acquisition entry interface
 st.markdown("### 🔑 Unlock Your AI Script Generator")
 st.write("Enter your business email below to connect to the elite AI trend-matching engine.")
 
 user_email = st.text_input("📧 Your Email Address", placeholder="name@company.com")
 
-# Helper function to check if the email format is correct
 def is_valid_email(email):
     pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
     return re.match(pattern, email) is not None
 
 st.write("---")
 
-# Main Action Trigger
+# Core operational trigger button logic
 if st.button("✨ Generate Custom AI Script", type="primary"):
     if not user_email:
         st.warning("⚠️ Please enter your email address to unlock the generator.")
@@ -51,12 +50,9 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
     else:
         with st.spinner("AI is brainstorming your viral script..."):
             try:
-                # --- SECURE SERVER LOG DATA PIPELINE ---
-                # This safely logs your customer email lead straight into your private Streamlit Cloud console
                 st.info(f"📥 Lead captured securely. Processing your request...")
                 print(f"[DATA_LEAD_CAPTURED]: {user_email} | Niche: {niche}")
                 
-                # --- AI GENERATION BLOCK ---
                 prompt = f"""
                 Write a complete, highly engaging short-form video script for social media.
                 Niche target: {niche}
@@ -85,7 +81,6 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
                 
                 ai_script = completion.choices.message.content
                 st.success("🔥 Unique AI Script Generated Successfully!")
-                
                 st.markdown(ai_script)
                 
                 st.download_button(
