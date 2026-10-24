@@ -79,7 +79,8 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
                     max_tokens=600
                 )
                 
-                ai_script = completion.choices.message.content
+                # FIXED: Accessing the first element [0] of the choices list correctly
+                ai_script = completion.choices[0].message.content
                 st.success("🔥 Unique AI Script Generated Successfully!")
                 st.markdown(ai_script)
                 
