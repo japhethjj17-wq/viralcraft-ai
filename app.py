@@ -1,19 +1,16 @@
 import streamlit as st
 from groq import Groq
-from streamlit_gsheets import GSheetsConnection
-import pandas as pd
 import re
 
-# 1. Pull the hidden secure key from Streamlit Cloud Secrets
+# Pull the hidden secure key from Streamlit Cloud Secrets
 try:
     GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 except Exception:
     st.error("🔒 Secret API Key missing. Please set up GROQ_API_KEY in your Streamlit dashboard.")
     st.stop()
 
-# 2. Establish Connections (Groq AI Engine & Google Sheets Pipeline)
+# Initialize the Groq AI Engine
 client = Groq(api_key=GROQ_API_KEY)
-conn = st.connection("gsheets", type=GSheetsConnection)
 
 st.set_page_config(page_title="ViralCraft AI", page_icon="🚀", layout="centered")
 
@@ -54,20 +51,10 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
     else:
         with st.spinner("AI is brainstorming your viral script..."):
             try:
-                # --- GOOGLE SHEETS PIPELINE DATA LOGGER ---
-                # Fetch existing rows from the Google Sheet
-                try:
-                    existing_data = conn.read(worksheet="Sheet1", ttl="0d")
-                    df = pd.DataFrame(existing_data)
-                except Exception:
-                    df = pd.DataFrame(columns=["Email", "Niche"])
-                
-                # Format the new captured user lead
-                new_lead = pd.DataFrame([{"Email": user_email, "Niche": niche}])
-                
-                # Combine the data tables and write it back to your sheet cloud rows
-                updated_df = pd.concat([df, new_lead], ignore_index=True)
-                conn.update(worksheet="Sheet1", data=updated_df)
+                # --- SECURE SERVER LOG DATA PIPELINE ---
+                # This safely logs your customer email lead straight into your private Streamlit Cloud console
+                st.info(f"📥 Lead captured securely. Processing your request...")
+                print(f"[DATA_LEAD_CAPTURED]: {user_email} | Niche: {niche}")
                 
                 # --- AI GENERATION BLOCK ---
                 prompt = f"""
@@ -97,7 +84,7 @@ if st.button("✨ Generate Custom AI Script", type="primary"):
                 )
                 
                 ai_script = completion.choices.message.content
-                st.success("🔥 Unique AI Script Generated Successfully! (Lead Logged)")
+                st.success("🔥 Unique AI Script Generated Successfully!")
                 
                 st.markdown(ai_script)
                 
